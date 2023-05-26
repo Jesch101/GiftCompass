@@ -31,14 +31,17 @@ Follow these instructions to get the project up and running on your local machin
    git clone https://github.com/Jesch101/Gift-Registry-2.0.git
    ```
 2. Navigate to project directory
+
   ```shell
    cd .\Gift-Registry-2.0\ 
    ```
 3. Install dependencies
+
   ```shell
   npm install
   ```
 4. Start the development server
+
   ```shell
   npm run dev
   ```
