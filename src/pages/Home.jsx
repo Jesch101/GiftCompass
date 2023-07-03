@@ -1,10 +1,10 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 function Home() {
   return (
     <Box>
-      <h1>Home</h1>
+      <Typography variant="h1">Home</Typography>
     </Box>
   );
 }
