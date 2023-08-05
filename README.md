@@ -26,21 +26,29 @@ Follow these instructions to get the project up and running on your local machin
 ### Installation
 
 1. Clone the repository:
+
 ```shell
  git clone https://github.com/Jesch101/Gift-Registry-2.0.git
- ```
-2. Navigate to project directory
-```shell
-cd .\Gift-Registry-2.0\ 
 ```
+
+2. Navigate to project directory
+
+```shell
+cd .\Gift-Registry-2.0\
+```
+
 3. Install dependencies
+
 ```shell
 npm install
 ```
+
 4. Start the development server
+
 ```shell
 npm run dev
 ```
+
 5. Open your browser and visit http://localhost:3000 to access the application.
 
 ## Contributing
@@ -53,4 +61,3 @@ Contributions are welcome! If you have any ideas, suggestions, or bug reports, p
 - [Vite](https://vitejs.dev/)
 - [Material-UI](https://mui.com/)
 - [Firebase](https://firebase.google.com/)
-
