@@ -1,16 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import Home from './pages/home/Home';
-import Navbar from './components/navbar/Navbar';
+import Navbar from './components/Navbar';
 import rootStyles from './themes/styles';
-import theme from './themes/theme';
 
 function App() {
   return (
     <>
       <Router>
         <div style={rootStyles}>
+          <Navbar />
           <Routes>
             <Route
               path='/'

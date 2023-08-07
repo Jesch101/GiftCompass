@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset default margin and padding */
 body,
 h1,
@@ -30,5 +34,4 @@ body,
 /* Set a base font size and font family */
 body {
   font-size: 16px;
-  font-family: Arial, sans-serif;
 }
