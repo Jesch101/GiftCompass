@@ -1,11 +1,19 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  mode: 'jit',
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
   theme: {
-    fontFamily: {
-      sans: ['Graphik', 'sans-serif'],
-      serif: ['Merriweather', 'serif'],
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
     },
     extend: {
       colors: {
@@ -23,8 +31,11 @@ export default {
         'gray-dark': '#273444',
         'gray': '#8492a6',
         'gray-light': '#d3dce6',
-      },
+      }
+    },
+    daisyui: {
+      themes: ["light", "dark"],
     },
   },
-  plugins: [],
-};
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
+}
