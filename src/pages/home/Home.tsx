@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import hero_img from '../../assets/undraw_community.svg';
 import { FaCalendarDays, FaGift } from 'react-icons/fa6';
 import { LuPartyPopper } from 'react-icons/lu';
@@ -21,7 +22,11 @@ const Home = () => {
             a coordinated gift-giving experience.
           </p>
           <div className='flex flex-row space-x-4'>
-            <button className='btn btn-accent'>Get Started</button>
+            <Link
+              to='/signup'
+              className='btn btn-accent'>
+              Get Started
+            </Link>
             <button className='btn btn-neutral'>Learn More</button>
           </div>
         </div>

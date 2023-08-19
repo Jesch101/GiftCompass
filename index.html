@@ -1,11 +1,18 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html
+  lang="en"
+  data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <link
+      rel="icon"
+      href="/src/assets/SVG Logo.svg"
+      type="image/svg+xml" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0" />
+
     <title>Gift Registry</title>
     <link
       rel="preconnect"
@@ -23,5 +30,12 @@
     <script
       type="module"
       src="/src/main.tsx"></script>
+    <script>
+      window.global = window;
+      window.process = {
+        env: { DEBUG: undefined },
+      };
+      var exports = {};
+    </script>
   </body>
 </html>

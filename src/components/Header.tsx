@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { useAuth } from '../context/AuthContex';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/SVG Logo.svg';
 
 const Header = () => {
-  const [auth, setAuth] = useState<boolean>(true);
+  const { signOut, currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/', { replace: true });
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <header className='sticky top-0 z-50 mt-1 w-full bg-base-100 bg-opacity-90 shadow-sm backdrop-blur transition-all duration-100'>
@@ -22,21 +33,21 @@ const Header = () => {
             </span>
           </Link>
           <nav className='flex items-center space-x-6 font-medium'>
-            {auth ? (
+            {currentUser !== null ? (
               <>
                 <Link
                   to='/explore'
-                  className='btn btn-ghost normal-case transition-colors '>
+                  className='btn btn-ghost normal-case transition-colors'>
                   Dashboard
                 </Link>
                 <Link
                   to='/create'
-                  className='btn btn-ghost normal-case transition-colors '>
+                  className='btn btn-ghost normal-case transition-colors'>
                   Create Event
                 </Link>
                 <Link
                   to='/my-events'
-                  className='btn btn-ghost normal-case transition-colors '>
+                  className='btn btn-ghost normal-case transition-colors'>
                   My Events
                 </Link>
               </>
@@ -53,11 +64,19 @@ const Header = () => {
         </div>
         <div className='flex flex-1 items-center justify-between space-x-2 md:justify-end'>
           <div className='w-full flex-1 md:w-auto md:flex-none'>
-            <button
-              className='btn normal-case'
-              onClick={() => setAuth(!auth)}>
-              {auth ? 'Logout' : 'Login'}
-            </button>
+            {currentUser === null ? (
+              <Link
+                to='/signin'
+                className='btn normal-case'>
+                Sign In
+              </Link>
+            ) : (
+              <button
+                className='btn normal-case'
+                onClick={handleSignOut}>
+                Sign Out
+              </button>
+            )}
           </div>
         </div>
       </div>
