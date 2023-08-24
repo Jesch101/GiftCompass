@@ -4,6 +4,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
+  sendEmailVerification,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from 'firebase/auth';
 
 const AuthContext = createContext();
@@ -35,9 +39,25 @@ export function AuthProvider({ children }) {
   }
 
   function updateUsername(name) {
-    return currentUser.updateProfile({
+    return updateProfile(auth.currentUser, {
       displayName: name,
     });
+  }
+
+  function verifyEmail() {
+    return sendEmailVerification(auth.currentUser);
+  }
+
+  function deleteAccount() {
+    return auth.currentUser.delete();
+  }
+
+  function reauthenticateWithPassword(password) {
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      password
+    );
+    return reauthenticateWithCredential(auth.currentUser, credential);
   }
 
   useEffect(() => {
@@ -57,6 +77,9 @@ export function AuthProvider({ children }) {
     signUp,
     googleSignIn,
     updateUsername,
+    verifyEmail,
+    deleteAccount,
+    reauthenticateWithPassword,
   };
 
   return (

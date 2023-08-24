@@ -4,8 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BiErrorCircle } from 'react-icons/bi';
 import { FaXmark } from 'react-icons/fa6';
 import { cn } from '@/lib/utils';
-import { useAuth } from '../../context/AuthContex';
+import { useAuth } from '../context/AuthContext';
 import Checkmark from '@/components/Checkmark';
+import { googleAuthError } from '@/utils/error-utils';
+import User from '@/models/User';
+import { addUser } from '@/utils/firestore-utils';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -29,23 +32,25 @@ const SignIn: React.FC = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await googleSignIn();
+      const res = await googleSignIn();
+
+      // Check if first time google login
+      if (res.user.metadata.createdAt === res.user.metadata.lastLoginAt) {
+        // Add user to firestore database
+        const newUserInfo = res.user;
+        const newUser: User = {
+          id: newUserInfo.uid,
+          name: newUserInfo.displayName,
+          email: newUserInfo.email,
+          signInType: 'google',
+        };
+        addUser(newUser);
+      }
+
       setSuccess(true);
     } catch (error: any) {
-      let errorCode = error.code;
-      switch (errorCode) {
-        case 'auth/cancelled-popup-request':
-          setErrorMessage('Popup closed. Please try again.');
-          break;
-        case 'auth/popup-closed-by-user':
-          setErrorMessage('Popup closed. Please try again.');
-          break;
-        case 'auth/popup-blocked':
-          setErrorMessage('Popup blocked. Please enable popups and try again.');
-          break;
-        default:
-          setErrorMessage('Error signing in with Google. Please try again.');
-      }
+      const errorMessage = googleAuthError(error.code);
+      setErrorMessage(errorMessage);
       setSigninError(true);
     }
   };
@@ -63,7 +68,7 @@ const SignIn: React.FC = () => {
     <div className='container flex h-[calc(100vh-68px)] flex-col items-center'>
       <div
         className={cn(
-          'card mt-40 w-96 bg-neutral text-neutral-content transition-all duration-500',
+          'card mt-32 w-96 bg-neutral text-neutral-content transition-all duration-500',
           {
             'bg-success text-success-content': success,
           }

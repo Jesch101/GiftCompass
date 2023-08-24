@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "Birthday Party",
+    "date": "2023-06-15",
+    "location": "123 Main St",
+    "description": "Celebrate Jane's birthday with friends and family.",
+    "owner": "user1",
+    "members": ["user1", "user2", "user3"],
+    "gifts": [
+      { "name": "Books", "claimedBy": "user2" },
+      { "name": "Gift Card", "claimedBy": null }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Anniversary Dinner",
+    "date": "2023-07-05",
+    "location": "456 Elm St",
+    "description": "Marking 10 wonderful years together.",
+    "owner": "user4",
+    "members": ["user1", "user4"],
+    "gifts": [{ "name": "Cookware Set", "claimedBy": null }]
+  },
+  {
+    "id": "3",
+    "name": "Housewarming Party",
+    "date": "2023-08-20",
+    "location": "789 Oak St",
+    "description": "Celebrate our new home with friends and neighbors.",
+    "owner": "user5",
+    "members": ["user1", "user5", "user6"],
+    "gifts": [
+      { "name": "Plants", "claimedBy": null },
+      { "name": "Decorative Items", "claimedBy": "user6" }
+    ]
+  }
+]

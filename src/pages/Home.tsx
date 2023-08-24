@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import hero_img from '../../assets/undraw_community.svg';
+import hero_img from '@/assets/undraw_community.svg';
 import { FaCalendarDays, FaGift } from 'react-icons/fa6';
 import { LuPartyPopper } from 'react-icons/lu';
 
 const Home = () => {
   return (
     <section className='mx-auto w-[85%] max-w-[100vw] pb-16 pt-10'>
-      <div className='grid grid-cols-2 grid-rows-1 gap-0'>
+      <div className='grid grid-rows-1 gap-0 md:grid-cols-2'>
         <div className='prose pl-1 pt-10'>
           <h1 className='text-6xl'>
             <span className='text-accent'>Effortless</span> Event Organizing
@@ -30,7 +30,7 @@ const Home = () => {
             <button className='btn btn-neutral'>Learn More</button>
           </div>
         </div>
-        <div>
+        <div className='hidden md:block'>
           <img
             src={hero_img}
             className='h-auto w-full'

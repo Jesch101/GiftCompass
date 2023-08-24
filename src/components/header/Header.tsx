@@ -1,20 +1,11 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContex';
-import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/SVG Logo.svg';
+import { useAuth } from '@/context/AuthContext';
+import { Link } from 'react-router-dom';
+import logo from '@/assets/SVG Logo.svg';
+import ProfileDropdown from './ProfileDropdown';
 
 const Header = () => {
-  const { signOut, currentUser } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate('/', { replace: true });
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  const { currentUser } = useAuth();
 
   return (
     <header className='sticky top-0 z-50 mt-1 w-full bg-base-100 bg-opacity-90 shadow-sm backdrop-blur transition-all duration-100'>
@@ -71,11 +62,7 @@ const Header = () => {
                 Sign In
               </Link>
             ) : (
-              <button
-                className='btn normal-case'
-                onClick={handleSignOut}>
-                Sign Out
-              </button>
+              <ProfileDropdown />
             )}
           </div>
         </div>

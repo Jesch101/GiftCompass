@@ -4,7 +4,7 @@ import svg_logo from '../assets/SVG Logo.svg';
 
 const Footer = () => {
   return (
-    <footer className='footer items-center bg-neutral p-4 text-neutral-content'>
+    <footer className='footer mt-auto items-center bg-neutral p-4 text-neutral-content'>
       <div className='grid-flow-col items-center'>
         <img
           src={svg_logo}
