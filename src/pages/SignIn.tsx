@@ -56,12 +56,20 @@ const SignIn: React.FC = () => {
   };
 
   useEffect(() => {
+    let timeoutId: any;
     if (success) {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         navigate('/');
         setSuccess(false);
       }, 3000);
     }
+
+    // Clean-up function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [success, setSuccess]);
 
   return (
@@ -80,7 +88,7 @@ const SignIn: React.FC = () => {
                 <Checkmark />
               </div>
               <h2 className='flex justify-center text-center text-4xl text-white'>
-                Success! You're signed in.
+                Success! You're signed in. Redirecting...
               </h2>
               <span className='loading loading-spinner loading-lg pt-2 text-white'></span>
             </div>
@@ -91,13 +99,13 @@ const SignIn: React.FC = () => {
                 <input
                   type='text'
                   placeholder='Email'
-                  className='input w-full max-w-xs'
+                  className='input w-full max-w-xs text-base-content'
                   onBlur={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type='password'
                   placeholder='Password'
-                  className='input w-full max-w-xs'
+                  className='input w-full max-w-xs text-base-content'
                   onBlur={(e) => setPassword(e.target.value)}
                 />
               </div>
@@ -120,9 +128,7 @@ const SignIn: React.FC = () => {
                 <button
                   onClick={handleSignIn}
                   className='btn btn-primary w-full'>
-                  <span
-                    className={cn({ 'loading loading-spinner': loading })}
-                  />
+                  <span className={cn({ 'loading loading-spinner': loading })} />
                   Sign In
                 </button>
               </div>

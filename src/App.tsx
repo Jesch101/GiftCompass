@@ -1,60 +1,85 @@
-import React from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
-import Home from '@/pages/Home';
-import Header from '@/components/header/Header';
-import Footer from '@/components/Footer';
-import SignUp from '@/pages/SignUp';
-import SignIn from '@/pages/SignIn';
-import ErrorPageWrapper from './pages/ErrorPageWrapper';
-import Profile from '@/pages/profile/Profile';
+import { EventProvider } from '@/context/EventContext';
+import { ThemeProvider } from './context/ThemeContext';
 import PrivateRoutes from '@/utils/PrivateRoutes';
+import Loader from '@/components/Loader';
+
+const Header = lazy(() => import('@/components/header/Header'));
+const Home = lazy(() => import('@/pages/Home'));
+const Footer = lazy(() => import('@/components/Footer'));
+const SignUp = lazy(() => import('@/pages/SignUp'));
+const SignIn = lazy(() => import('@/pages/SignIn'));
+const ErrorPageWrapper = lazy(() => import('@/pages/ErrorPageWrapper'));
+const Profile = lazy(() => import('@/pages/profile/Profile'));
+const CreateEventContainer = lazy(() => import('@/pages/create-event/CreateEventContainer'));
+const EventContainer = lazy(() => import('@/pages/event/EventContainer'));
+const EventsPage = lazy(() => import('@/pages/event/EventsPage'));
+const Dashboard = lazy(() => import('@/pages/Dashboard'));
 
 function App() {
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       <AuthProvider>
-        <Router>
-          <div className='relative flex min-h-screen flex-col'>
-            <Header />
-            <Routes>
-              <Route
-                path='/'
-                element={<Home />}
-              />
-              <Route
-                path='/signup'
-                element={<SignUp />}
-              />
-              <Route
-                path='/signin'
-                element={<SignIn />}
-              />
-              <Route
-                path='/error'
-                element={<ErrorPageWrapper />}
-              />
-              <Route
-                path='*'
-                element={<Navigate to='/error' />}
-              />
-              <Route element={<PrivateRoutes />}>
+        <ThemeProvider>
+          <Router>
+            <div className='relative flex min-h-screen flex-col'>
+              <Header />
+              <Routes>
                 <Route
-                  path='/profile'
-                  element={<Profile />}
+                  path='/'
+                  element={<Home />}
                 />
-              </Route>
-            </Routes>
-            <Footer />
-          </div>
-        </Router>
+                <Route
+                  path='/signup'
+                  element={<SignUp />}
+                />
+                <Route
+                  path='/signin'
+                  element={<SignIn />}
+                />
+                <Route
+                  path='/error'
+                  element={<ErrorPageWrapper />}
+                />
+                <Route
+                  path='*'
+                  element={<Navigate to='/error' />}
+                />
+                <Route element={<PrivateRoutes />}>
+                  <Route
+                    path='/profile'
+                    element={<Profile />}
+                  />
+                  <Route
+                    path='/create-event'
+                    element={
+                      <EventProvider>
+                        <CreateEventContainer />
+                      </EventProvider>
+                    }
+                  />
+                  <Route
+                    path='/dashboard'
+                    element={<Dashboard />}
+                  />
+                  <Route
+                    path='/my-events'
+                    element={<EventsPage />}
+                  />
+                  <Route
+                    path='/event/:id'
+                    element={<EventContainer />}
+                  />
+                </Route>
+              </Routes>
+              <Footer />
+            </div>
+          </Router>
+        </ThemeProvider>
       </AuthProvider>
-    </>
+    </Suspense>
   );
 }
 

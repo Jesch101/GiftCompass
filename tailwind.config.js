@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
+  darkMode: 'class',
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -33,9 +33,9 @@ module.exports = {
         'gray-light': '#d3dce6',
       }
     },
-    daisyui: {
-      themes: ["light", "dark"],
-    },
   },
-  plugins: [require("@tailwindcss/typography"), require('@tailwindcss/forms'), require("daisyui")],
+  daisyui: {
+    themes: ["cupcake", "dark", "corporate", "light", "emerald"],
+  },
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 }

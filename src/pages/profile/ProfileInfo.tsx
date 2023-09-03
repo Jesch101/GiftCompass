@@ -5,13 +5,8 @@ import { cn } from '@/lib/utils';
 import { deleteUser } from '@/utils/firestore-utils';
 
 const ProfileInfo = () => {
-  const {
-    currentUser,
-    verifyEmail,
-    loading,
-    deleteAccount,
-    reauthenticateWithPassword,
-  } = useAuth();
+  const { currentUser, verifyEmail, loading, deleteAccount, reauthenticateWithPassword } =
+    useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [updatedUsername, setUpdatedUsername] = useState<string>('');
@@ -100,7 +95,7 @@ const ProfileInfo = () => {
     <div className='h-full w-full p-16'>
       <div className='grid grid-cols-2 gap-x-8 gap-y-6'>
         <div className='col-span-2'>
-          <div className='text-3xl text-neutral-content'>User Info (WIP)</div>
+          <div className='text-3xl text-base-content'>User Info (WIP)</div>
           <div className='divider mb-0 mt-0'></div>
         </div>
         {!currentUser.emailVerified ? (
@@ -110,8 +105,8 @@ const ProfileInfo = () => {
                 <FiInfo className='h-6 w-6 shrink-0 stroke-info' />
                 <div>
                   <h3 className='text-md font-semibold'>
-                    You haven't verified your email yet. To use the full app,
-                    please verify your email.
+                    You haven't verified your email yet. To use the full app, please verify your
+                    email.
                   </h3>
                 </div>
                 <button
@@ -129,8 +124,7 @@ const ProfileInfo = () => {
             ) : (
               <>
                 <h2 className='text-sm font-semibold'>
-                  Verification email sent! Didn't get anything? Wait a minute
-                  and check your inbox.
+                  Verification email sent! Didn't get anything? Wait a minute and check your inbox.
                 </h2>
                 <button
                   className='btn btn-success btn-sm mt-2 normal-case text-success-content'
@@ -188,7 +182,7 @@ const ProfileInfo = () => {
           </div>
         </div>
         <div className='col-span-2 pt-8 '>
-          <div className='text-3xl text-neutral-content'>Password Reset</div>
+          <div className='text-3xl text-base-content'>Password Reset</div>
           <div className='divider mb-0 mt-0'></div>
         </div>
         <div className='col-span-2 flex flex-col gap-2 md:col-span-1'>
@@ -209,7 +203,7 @@ const ProfileInfo = () => {
           </button>
         </div>
         <div className='col-span-2 pt-8 '>
-          <div className='text-3xl text-error'>Delete Account</div>
+          <div className='text-3xl text-base-content'>Delete Account</div>
           <div className='divider mb-0 mt-0'></div>
         </div>
         <div className='col-span-2'>
@@ -243,8 +237,8 @@ const ProfileInfo = () => {
               className='modal-box'>
               <h3 className='text-lg font-bold'>Confirm Deletion</h3>
               <p className='py-4'>
-                Are you sure you want to delete your account? This action cannot
-                be undone. To confirm, please enter your password.
+                Are you sure you want to delete your account? This action cannot be undone. To
+                confirm, please enter your password.
               </p>
               <input
                 className='input input-bordered w-full max-w-xs border-error'

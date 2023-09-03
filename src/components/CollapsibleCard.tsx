@@ -9,6 +9,7 @@ interface CollapsibleCardProps {
   open?: boolean; // Optional: whether the card is open by default
   btnText?: string; // Optional: text for an additional button next to the toggle button
   onBtnClick?: () => void; // Optional: click handler for the additional button
+  className?: string; // Optional: additional CSS classess
 }
 
 const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
@@ -17,11 +18,16 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
   open,
   btnText,
   onBtnClick,
+  className,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(open || false);
 
   return (
-    <Card>
+    <div
+      className={cn(
+        'overflow-x-auto rounded-xl bg-base-100 p-4 text-base-content shadow-lg',
+        className
+      )}>
       <div className={cn('flex flex-row items-center justify-between')}>
         <div className='flex flex-row items-center gap-4'>
           <h1 className={cn('p-2 text-3xl font-bold')}>{title}</h1>
@@ -52,7 +58,7 @@ const CollapsibleCard: React.FC<CollapsibleCardProps> = ({
         )}>
         {children}
       </div>
-    </Card>
+    </div>
   );
 };
 

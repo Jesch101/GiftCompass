@@ -12,8 +12,8 @@ GiftCompass is a web application that simplifies gift-giving events, allowing us
 
 ## Technologies Used
 
-- Frontend: React, Vite, DaisyUI
-- Backend: AWS Amplify
+- Frontend: React, Vite, DaisyUI, Typescript
+- Backend: Firebase
 
 ## Getting Started
 
@@ -60,4 +60,4 @@ Contributions are welcome! If you have any ideas, suggestions, or bug reports, p
 - [React](https://reactjs.org/)
 - [Vite](https://vitejs.dev/)
 - [DaisyUI](https://daisyui.com/)
-- [AWS Amplify](https://aws.amazon.com/amplify/)
+- [Firebase](https://firebase.google.com/)

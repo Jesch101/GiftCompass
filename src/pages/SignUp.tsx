@@ -115,28 +115,27 @@ const SignUp: React.FC = () => {
                 <input
                   type='text'
                   placeholder='Username'
-                  className='input w-full max-w-xs'
+                  className='input w-full max-w-xs text-base-content'
                   onBlur={(e) => setUsername(e.target.value)}
                 />
                 <input
                   type='text'
                   placeholder='Email'
-                  className='input w-full max-w-xs'
+                  className='input w-full max-w-xs text-base-content'
                   onBlur={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type='password'
                   placeholder='Password'
-                  className='input w-full max-w-xs'
+                  className='input w-full max-w-xs text-base-content'
                   onBlur={(e) => setPassword(e.target.value)}
                 />
                 <input
                   type='password'
                   placeholder='Confirm Password'
-                  className={cn('input w-full max-w-xs', {
+                  className={cn('input w-full max-w-xs text-base-content', {
                     'input-error': isPasswordWrong,
-                    'input-success':
-                      confirmPassword === password && confirmPassword !== '',
+                    'input-success': confirmPassword === password && confirmPassword !== '',
                   })}
                   onBlur={handlePasswordCheck}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -162,9 +161,7 @@ const SignUp: React.FC = () => {
                 <button
                   onClick={handleSignUp}
                   className='btn btn-primary w-full'>
-                  <span
-                    className={cn({ 'loading loading-spinner': loading })}
-                  />
+                  <span className={cn({ 'loading loading-spinner': loading })} />
                   Sign Up
                 </button>
               </div>

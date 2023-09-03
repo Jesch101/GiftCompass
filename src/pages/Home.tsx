@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import hero_img from '@/assets/undraw_community.svg';
 import { FaCalendarDays, FaGift } from 'react-icons/fa6';
 import { LuPartyPopper } from 'react-icons/lu';
+import { useAuth } from '@/context/AuthContext';
 
 const Home = () => {
+  const { currentUser } = useAuth();
   return (
     <section className='mx-auto w-[85%] max-w-[100vw] pb-16 pt-10'>
       <div className='grid grid-rows-1 gap-0 md:grid-cols-2'>
@@ -23,7 +25,7 @@ const Home = () => {
           </p>
           <div className='flex flex-row space-x-4'>
             <Link
-              to='/signup'
+              to={currentUser ? '/dashboard' : '/signup'}
               className='btn btn-accent'>
               Get Started
             </Link>

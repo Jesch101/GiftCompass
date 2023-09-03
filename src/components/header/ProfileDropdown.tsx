@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { PiSignOutBold } from 'react-icons/pi';
 import { FaRegUser } from 'react-icons/fa6';
+import { FaUser } from 'react-icons/fa6';
 
 const ProfileDropdown = () => {
   const { signOut, currentUser, loading } = useAuth();
@@ -21,23 +22,26 @@ const ProfileDropdown = () => {
     <div className='dropdown dropdown-bottom sm:dropdown-end'>
       <label
         tabIndex={0}
-        className='btn btn-ghost rounded-btn text-lg normal-case'>
+        className='btn btn-circle btn-neutral text-lg normal-case'>
         {loading || currentUser.displayName === null ? (
-          <span className='loading loading-spinner loading-lg pt-2 text-white'></span>
+          <span className='loading loading-spinner loading-lg pt-2 text-primary-content'></span>
         ) : (
-          <p>Welcome, {currentUser?.displayName}</p>
+          <FaUser
+            size={16}
+            className='text-neutral-content'
+          />
         )}
       </label>
       <ul
         tabIndex={0}
-        className='menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-neutral p-2 font-semibold normal-case shadow'>
+        className='menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 font-semibold normal-case text-base-content shadow-lg'>
         <li>
           <Link to='/profile'>
             <FaRegUser
               size={16}
               className='mr-1'
             />
-            View My Profile
+            <span>My Account</span>
           </Link>
         </li>
         <li>
@@ -46,7 +50,7 @@ const ProfileDropdown = () => {
               size={16}
               className='mr-1'
             />
-            Sign Out
+            <span>Sign Out</span>
           </a>
         </li>
       </ul>

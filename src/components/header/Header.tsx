@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/SVG Logo.svg';
 import ProfileDropdown from './ProfileDropdown';
+import ToggleTheme from './ToggleTheme';
 
 const Header = () => {
   const { currentUser } = useAuth();
@@ -27,12 +28,12 @@ const Header = () => {
             {currentUser !== null ? (
               <>
                 <Link
-                  to='/explore'
+                  to='/dashboard'
                   className='btn btn-ghost normal-case transition-colors'>
                   Dashboard
                 </Link>
                 <Link
-                  to='/create'
+                  to='/create-event'
                   className='btn btn-ghost normal-case transition-colors'>
                   Create Event
                 </Link>
@@ -53,7 +54,8 @@ const Header = () => {
             )}
           </nav>
         </div>
-        <div className='flex flex-1 items-center justify-between space-x-2 md:justify-end'>
+        <div className='flex flex-1 flex-row items-center justify-between space-x-2 md:justify-end'>
+          <ToggleTheme />
           <div className='w-full flex-1 md:w-auto md:flex-none'>
             {currentUser === null ? (
               <Link

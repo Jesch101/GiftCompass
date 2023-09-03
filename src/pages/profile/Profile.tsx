@@ -37,9 +37,7 @@ const Profile = () => {
               <div className='avatar'>
                 <div className='w-20 rounded-full bg-primary text-primary-content'>
                   <div className='flex h-full w-full items-center justify-center'>
-                    <p className='text-3xl font-medium'>
-                      {username?.charAt(0)}
-                    </p>
+                    <p className='text-3xl font-medium'>{username?.charAt(0)}</p>
                   </div>
                 </div>
               </div>
@@ -61,49 +59,33 @@ const Profile = () => {
           <div className='flex w-full justify-end'>
             <ul className='mt-8 flex w-full max-w-[350px] flex-shrink-0 flex-col'>
               <li
-                className={cn(
-                  'cursor-pointer rounded-l-3xl p-4 hover:bg-neutral-focus',
-                  {
-                    'bg-neutral text-primary-content  hover:bg-neutral':
-                      activeTab === 1,
-                  }
-                )}
+                className={cn('cursor-pointer rounded-l-3xl p-4 hover:bg-base-300', {
+                  'bg-base-200 text-base-content hover:bg-base-200': activeTab === 1,
+                })}
                 onClick={() => setActiveTab(1)}>
                 <h2 className='text-xl font-semibold'>Edit Profile Info</h2>
                 <p className='text-sm'>Personalize your details</p>
               </li>
               <li
-                className={cn(
-                  'cursor-pointer rounded-l-3xl p-4 hover:bg-neutral-focus',
-                  {
-                    'bg-neutral text-primary-content hover:bg-neutral':
-                      activeTab === 2,
-                  }
-                )}
+                className={cn('cursor-pointer rounded-l-3xl p-4 hover:bg-base-300', {
+                  'bg-base-200 text-base-content hover:bg-base-200': activeTab === 2,
+                })}
                 onClick={() => setActiveTab(2)}>
                 <h2 className='text-xl font-semibold'>View My Events</h2>
                 <p className='text-sm'>Explore your event list</p>
               </li>
               <li
-                className={cn(
-                  'cursor-pointer rounded-l-3xl p-4 hover:bg-neutral-focus ',
-                  {
-                    'bg-neutral text-primary-content hover:bg-neutral':
-                      activeTab === 3,
-                  }
-                )}
+                className={cn('cursor-pointer rounded-l-3xl p-4 hover:bg-base-300 ', {
+                  'bg-base-200 text-base-content hover:bg-base-200': activeTab === 3,
+                })}
                 onClick={() => setActiveTab(3)}>
                 <h2 className='text-xl font-semibold'>View My Gifts</h2>
-                <p className='text-sm'>
-                  Browse your requested and claimed gifts
-                </p>
+                <p className='text-sm'>Browse your requested and claimed gifts</p>
               </li>
             </ul>
           </div>
         </aside>
-        <main className='min-h-full grow rounded-tl-xl bg-neutral'>
-          {tabContent}
-        </main>
+        <main className='min-h-full grow rounded-tl-xl bg-base-200'>{tabContent}</main>
       </div>
     </div>
   );
