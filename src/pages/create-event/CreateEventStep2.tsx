@@ -43,7 +43,7 @@ const CreateEventStep2 = () => {
 
   const darkTheme = createTheme({
     palette: {
-      mode: theme === 'dark' ? 'dark' : 'light',
+      mode: theme === 'night' ? 'dark' : 'light',
     },
   });
 

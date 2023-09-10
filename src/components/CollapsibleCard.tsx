@@ -1,7 +1,6 @@
 import React, { useState, ReactNode } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { cn } from '@/lib/utils';
-import Card from './Card';
 
 interface CollapsibleCardProps {
   title: string; // Title of the card

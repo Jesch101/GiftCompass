@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { PiSignOutBold } from 'react-icons/pi';

@@ -13,7 +13,7 @@ const CreateEventIntro = () => {
 
       {/* Iconography */}
       <div className='mb-4'>
-        <BsFillCalendarPlusFill className='text-4xl text-accent' />
+        <BsFillCalendarPlusFill className='text-4xl text-primary' />
       </div>
       <StepIndicator />
 

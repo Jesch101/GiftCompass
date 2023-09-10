@@ -6,7 +6,7 @@ import { BiErrorCircle } from 'react-icons/bi';
 import { FaXmark } from 'react-icons/fa6';
 import Checkmark from '@/components/Checkmark';
 import { useNavigate } from 'react-router-dom';
-import { addUser } from '@/utils/firestore-utils';
+import { addUser } from '@/utils/firestore-operations';
 import { firebaseAuthError, googleAuthError } from '@/utils/error-utils';
 import User from '@/models/User';
 

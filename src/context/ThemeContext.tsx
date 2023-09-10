@@ -23,7 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<string>('corporate');
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'corporate' : 'dark';
+    const newTheme = theme === 'night' ? 'corporate' : 'night';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
   };
@@ -31,7 +31,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     // Check system preference
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const defaultTheme = prefersDarkMode ? 'dark' : 'corporate';
+    const defaultTheme = prefersDarkMode ? 'night' : 'corporate';
 
     const savedTheme = localStorage.getItem('theme') || defaultTheme;
     setTheme(savedTheme);

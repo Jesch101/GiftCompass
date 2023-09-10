@@ -12,21 +12,20 @@ const Home = () => {
       <div className='grid grid-rows-1 gap-0 md:grid-cols-2'>
         <div className='prose pl-1 pt-10'>
           <h1 className='text-6xl'>
-            <span className='text-accent'>Effortless</span> Event Organizing
+            <span className='text-primary'>Effortless</span> Event Organizing
           </h1>
           <p className='text-lg'>
-            Whether it's a birthday, wedding, holiday gathering, or any special
-            occasion, our intuitive tools make event creation and management a
-            seamless experience.
+            Whether it's a birthday, wedding, holiday gathering, or any special occasion, our
+            intuitive tools make event creation and management a seamless experience.
           </p>
           <p className='text-lg'>
-            Set event details, invite guests, and keep everyone in the loop for
-            a coordinated gift-giving experience.
+            Set event details, invite guests, and keep everyone in the loop for a coordinated
+            gift-giving experience.
           </p>
           <div className='flex flex-row space-x-4'>
             <Link
               to={currentUser ? '/dashboard' : '/signup'}
-              className='btn btn-accent'>
+              className='btn btn-primary'>
               Get Started
             </Link>
             <button className='btn btn-neutral'>Learn More</button>
@@ -40,7 +39,7 @@ const Home = () => {
           />
         </div>
       </div>
-      <section className='mt-72'>
+      <section className='mt-48'>
         <div className='mb-12 flex justify-center align-middle'>
           <h2 className='text-4xl'>Why GiftCompass?</h2>
         </div>
@@ -48,40 +47,38 @@ const Home = () => {
           <div className='grid grid-cols-1 gap-10 md:grid-cols-3'>
             <div className='card mx-auto w-full bg-neutral text-neutral-content md:w-80'>
               <div className='group card-body transform items-center text-center transition-all hover:scale-110'>
-                <FaCalendarDays className='h-16 w-auto transform text-accent transition-transform group-hover:animate-pulse' />
+                <FaCalendarDays className='h-16 w-auto transform text-primary transition-transform group-hover:animate-pulse' />
                 <h2 className='card-title'>Seamless Gift Planning</h2>
                 <p>
-                  Effortlessly create events, manage guest lists, and track gift
-                  preferences in one place with GiftCompass.
+                  Effortlessly create events, manage guest lists, and track gift preferences in one
+                  place with GiftCompass.
                 </p>
               </div>
             </div>
             <div className='group card mx-auto w-full transform bg-neutral text-neutral-content transition-all hover:scale-110 md:w-80'>
               <div className='card-body items-center text-center'>
-                <FaGift className='h-16 w-auto transform text-accent transition-transform group-hover:animate-bounce' />
+                <FaGift className='h-16 w-auto transform text-primary transition-transform group-hover:animate-bounce' />
                 <h2 className='card-title'>Thoughtful Gift Selection</h2>
                 <p>
-                  Share your gift preferences and wish lists, allowing loved
-                  ones to choose presents that truly reflect your desires.
+                  Share your gift preferences and wish lists, allowing loved ones to choose presents
+                  that truly reflect your desires.
                 </p>
               </div>
             </div>
             <div className=' group card mx-auto w-full transform bg-neutral text-neutral-content transition-all hover:scale-110 md:w-80'>
               <div className='card-body items-center text-center'>
-                <LuPartyPopper className='h-16 w-auto transform text-accent transition-transform group-hover:rotate-12' />
+                <LuPartyPopper className='h-16 w-auto transform text-primary transition-transform group-hover:rotate-12' />
                 <h2 className='card-title'>Personalized Celebrations</h2>
                 <p>
-                  Create unique celebrations with customized themes and event
-                  details using GiftCompass.
+                  Create unique celebrations with customized themes and event details using
+                  GiftCompass.
                 </p>
               </div>
             </div>
             <div className='card col-span-1 mx-auto w-full bg-neutral text-neutral-content md:col-span-3'>
               <div className='card-body'>
                 <h2 className='card-title'>How Does It Work?</h2>
-                <p>
-                  Effortlessly navigate the gift-giving process in 4 easy steps.
-                </p>
+                <p>Effortlessly navigate the gift-giving process in 4 easy steps.</p>
                 <p>WIP</p>
               </div>
             </div>

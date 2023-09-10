@@ -4,11 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BiErrorCircle } from 'react-icons/bi';
 import { FaXmark } from 'react-icons/fa6';
 import { cn } from '@/lib/utils';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Checkmark from '@/components/Checkmark';
 import { googleAuthError } from '@/utils/error-utils';
 import User from '@/models/User';
-import { addUser } from '@/utils/firestore-utils';
+import { addUser } from '@/utils/firestore-operations';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>('');

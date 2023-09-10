@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Loader = () => {
   return (
     <div className='absolute left-[50%] top-[50%]'>

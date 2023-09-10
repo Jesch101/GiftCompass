@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { FiInfo, FiAlertCircle } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
-import { deleteUser } from '@/utils/firestore-utils';
+import { deleteUser } from '@/utils/firestore-operations';
 
 const ProfileInfo = () => {
   const { currentUser, verifyEmail, loading, deleteAccount, reauthenticateWithPassword } =

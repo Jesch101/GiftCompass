@@ -1,11 +1,58 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createEvent, addOwnedEvent } from '@/utils/firestore-operations';
 import { useEvent } from '@/context/EventContext';
 import { PiCaretLeft } from 'react-icons/pi';
-import { FaCheck } from 'react-icons/fa6';
+import { useAuth } from '@/context/AuthContext';
 
 const CreateEventStep4 = () => {
   const { eventData, setStep } = useEvent();
+  const { currentUser } = useAuth();
+  const [status, setStatus] = useState<string>('');
+  const [disableCreate, setDisableCreate] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const handleEventCreation = () => {
+    setDisableCreate(true);
+    setLoading(true);
+    createEvent(eventData)
+      .then(async (res) => {
+        await addOwnedEvent(currentUser.uid, res);
+        return res;
+      })
+      .then((res) => {
+        setStatus('success');
+        setTimeout(() => {
+          navigate(`/event/${res}`);
+        }, 4000);
+      })
+      .catch((err: Error) => {
+        console.error('Failed to create event:', err);
+        setStatus('error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    let timeoutId: any;
+    if (status === 'error') {
+      timeoutId = setTimeout(() => {
+        setStatus('');
+        setDisableCreate(false);
+      }, 8000);
+    }
+
+    // Clean-up function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [status, setStatus]);
 
   return (
     <div className='mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg'>
@@ -41,20 +88,65 @@ const CreateEventStep4 = () => {
             </li>
           </ul>
         </div>
+        {status === 'error' ? (
+          <div className='alert alert-error shadow-lg'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-6 w-6 shrink-0 stroke-current'
+              fill='none'
+              viewBox='0 0 24 24'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
+                d='M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
+              />
+            </svg>
+            <span>Uh oh! There was an issue creating the event. Please try again.</span>
+          </div>
+        ) : null}
         <div className='mt-6 flex space-x-4'>
-          <button
-            className='btn btn-secondary'
-            onClick={() => setStep(3)}>
-            <span>
-              <PiCaretLeft />
-            </span>
-            Back
-          </button>
-          <button
-            className='btn btn-success'
-            onClick={() => console.log(eventData)}>
-            Confirm
-          </button>
+          {loading ? (
+            <span className='loading loading-spinner loading-sm'></span>
+          ) : (
+            <>
+              {status === 'success' ? (
+                <div className='alert alert-success shadow-lg'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-6 w-6 shrink-0 stroke-current'
+                    fill='none'
+                    viewBox='0 0 24 24'>
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
+                      d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+                    />
+                  </svg>
+                  <span>Your event was successfully created! Redirecting... </span>
+                  <span className='loading loading-spinner loading-sm'></span>
+                </div>
+              ) : (
+                <>
+                  <button
+                    className='btn btn-secondary'
+                    onClick={() => setStep(3)}>
+                    <span>
+                      <PiCaretLeft />
+                    </span>
+                    Back
+                  </button>
+                  <button
+                    className='btn btn-success'
+                    onClick={handleEventCreation}
+                    disabled={disableCreate}>
+                    Confirm
+                  </button>
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
