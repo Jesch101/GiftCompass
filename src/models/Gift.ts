@@ -1,17 +1,16 @@
-import User from './User';
-import Event from './Event';
-
 interface Gift {
   id: string;
-  owner: User['id'];
-  event: Event['id'];
+  anonymous: boolean;
+  eventId: string;
   name: string;
-  description?: string;
   link?: string;
   price?: string;
-  amount?: number;
-  reservedBy: User['id'] | null;
+  requestedByName: string | null;
+  requestedById: string | null;
+  claimedByName?: string | null;
+  claimedById?: string | null;
   reservedAt: Date | null;
+  giftCategory: string | null;
 }
 
 export default Gift;

@@ -5,15 +5,15 @@ import {
   setDoc,
   getDoc,
   getDocs,
-  addDoc,
   updateDoc,
   deleteDoc,
   arrayUnion,
   query,
-  where,
+  arrayRemove,
 } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import User from '@/models/User';
+import Gift from '@/models/Gift';
 
 // Utility function to add a new user
 export async function addUser(user: User) {
@@ -59,6 +59,85 @@ export async function getEvent(eventId: string): Promise<any> {
     throw new Error('Event not found');
   }
 }
+
+export async function getEventGifts(eventId: string): Promise<any> {
+  const eventRef = doc(db, 'events', eventId);
+  const eventSnap = await getDoc(eventRef);
+
+  if (eventSnap.exists()) {
+    // Fetch the gifts sub-collection if it exists
+    const giftsRef = collection(eventRef, 'gifts');
+    const giftsQuery = query(giftsRef);
+    const giftsSnap = await getDocs(giftsQuery);
+
+    let gifts: any[] = [];
+    if (!giftsSnap.empty) {
+      gifts = giftsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    }
+
+    return gifts;
+  } else {
+    throw new Error('Event not found');
+  }
+}
+
+export async function addGiftToEvent(eventId: string, gift: Gift): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const giftsCollectionRef = collection(db, 'events', eventId, 'gifts');
+      const giftDocsSnapshot = await getDocs(giftsCollectionRef);
+      const giftDocRef = doc(giftsCollectionRef, gift.id);
+
+      await setDoc(giftDocRef, {
+        ...gift,
+        id: gift.id,
+        eventId: eventId,
+      });
+
+      // Update the user to append the new gift ID to their 'requestedGifts' array
+      if (gift.requestedById) {
+        const userDocRef = doc(db, 'users', gift.requestedById);
+        await updateDoc(userDocRef, {
+          requestedGifts: arrayUnion(gift.id),
+        });
+      }
+
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export const deleteGift = (gift: Gift): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Check if the gift exists in the event's sub-collection
+      const giftDocRef = doc(db, 'events', gift.eventId, 'gifts', gift.id);
+      const giftDocSnap = await getDoc(giftDocRef);
+
+      if (!giftDocSnap.exists()) {
+        reject(new Error('Gift not found'));
+        return;
+      }
+
+      // Delete the gift from the event's sub-collection
+      await deleteDoc(giftDocRef);
+
+      // Remove the gift ID from the user's requestedGifts array
+      if (gift.requestedById) {
+        const userDocRef = doc(db, 'users', gift.requestedById);
+        await updateDoc(userDocRef, {
+          requestedGifts: arrayRemove(gift.id),
+        });
+      }
+
+      resolve();
+    } catch (error: any) {
+      reject(new Error(`Error deleting gift: ${error.message}`));
+    }
+  });
+};
 
 export async function checkEventExists(eventId: string): Promise<boolean> {
   const eventRef = doc(db, 'events', eventId);

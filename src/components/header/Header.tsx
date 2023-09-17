@@ -6,7 +6,6 @@ import ToggleTheme from './ToggleTheme';
 
 const Header = () => {
   const { currentUser } = useAuth();
-
   return (
     <header className='sticky top-0 z-50 mt-1 w-full bg-base-100 bg-opacity-90 shadow-sm backdrop-blur transition-all duration-100'>
       <div className='container flex h-16 items-center justify-center'>

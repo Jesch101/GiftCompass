@@ -5,7 +5,6 @@ import EventCard from '@/components/EventCard';
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
-  console.log(currentUser);
 
   return (
     <div className='container flex w-full flex-col items-center gap-2'>
