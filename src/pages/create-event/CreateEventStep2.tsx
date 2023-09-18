@@ -48,7 +48,10 @@ const CreateEventStep2 = () => {
   });
 
   return (
-    <div className='mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg'>
+    <div
+      className={cn('mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg', {
+        'bg-neutral text-neutral-content': theme === 'night',
+      })}>
       <div className='flex h-full flex-col items-center gap-4 p-4'>
         <h1 className='text-2xl font-semibold text-base-content'>Step 2: Date and Time</h1>
         <p className='text-center text-base text-base-content'>

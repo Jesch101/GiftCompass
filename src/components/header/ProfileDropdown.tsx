@@ -3,10 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { PiSignOutBold } from 'react-icons/pi';
 import { FaRegUser } from 'react-icons/fa6';
 import { FaUser } from 'react-icons/fa6';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/context/ThemeContext';
 
 const ProfileDropdown = () => {
   const { signOut, currentUser, loading } = useAuth();
   const navigate = useNavigate();
+
+  const { theme } = useTheme();
 
   const handleSignOut = async (): Promise<void> => {
     try {
@@ -33,7 +37,12 @@ const ProfileDropdown = () => {
       </label>
       <ul
         tabIndex={0}
-        className='menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 font-semibold normal-case text-base-content shadow-lg'>
+        className={cn(
+          'menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-200 p-2 font-semibold normal-case text-base-content shadow-lg',
+          {
+            'bg-neutral text-neutral-content': theme === 'night',
+          }
+        )}>
         <li>
           <Link to='/profile'>
             <FaRegUser

@@ -3,6 +3,7 @@ interface Gift {
   anonymous: boolean;
   eventId: string;
   name: string;
+  details: string;
   link?: string;
   price?: string;
   requestedByName: string | null;

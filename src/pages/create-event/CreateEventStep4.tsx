@@ -4,6 +4,8 @@ import { createEvent, addOwnedEvent } from '@/utils/firestore-operations';
 import { useEvent } from '@/context/EventContext';
 import { PiCaretLeft } from 'react-icons/pi';
 import { useAuth } from '@/context/AuthContext';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/context/ThemeContext';
 
 const CreateEventStep4 = () => {
   const { eventData, setStep } = useEvent();
@@ -13,6 +15,7 @@ const CreateEventStep4 = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const handleEventCreation = () => {
     setDisableCreate(true);
@@ -55,7 +58,10 @@ const CreateEventStep4 = () => {
   }, [status, setStatus]);
 
   return (
-    <div className='mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg'>
+    <div
+      className={cn('mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg', {
+        'bg-neutral text-neutral-content': theme === 'night',
+      })}>
       <div className='flex h-full flex-col items-center gap-4 p-4'>
         <h1 className='text-2xl font-semibold text-base-content'>Step 4: Confirm and Create</h1>
         <p className='text-center text-base text-base-content'>

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { PiCaretRight, PiCaretLeft } from 'react-icons/pi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
+import { useTheme } from '@/context/ThemeContext';
 
 const CreateEventStep3 = () => {
   const [error, setError] = useState<boolean>(true);
@@ -19,13 +20,15 @@ const CreateEventStep3 = () => {
     'Health & Wellness',
     'Hobbies & Crafts',
     'Travel & Experiences',
-    'Miscellaneous',
+    'Other',
   ];
   const { setStep, setEventData, eventData } = useEvent();
   const [unselected, setUnselected] = useState<string[]>(
     giftsList.filter((item) => !eventData.giftCategories.includes(item))
   );
   const [selected, setSelected] = useState<string[]>(eventData.giftCategories);
+
+  const { theme } = useTheme();
 
   const itemVariants = {
     hidden: { opacity: 0, x: -50 },
@@ -71,7 +74,10 @@ const CreateEventStep3 = () => {
   }, [selected, setSelected]);
 
   return (
-    <div className='mb-12 w-full max-w-5xl rounded-2xl bg-base-200 shadow-lg'>
+    <div
+      className={cn('mb-12 w-full max-w-5xl rounded-2xl bg-base-200 shadow-lg', {
+        'bg-neutral text-neutral-content': theme === 'night',
+      })}>
       <div className='flex h-full flex-col items-center gap-4 p-4'>
         <h1 className='text-2xl font-semibold text-base-content'>Step 3: Gift Preferences</h1>
         <div className='w-full max-w-xl'>
@@ -84,12 +90,12 @@ const CreateEventStep3 = () => {
           <div className='mx-auto w-full md:w-[95%]'>
             <h1 className='mb-2 text-xl font-bold'>Selected Gift Categories</h1>
             {selected.length === 0 ? (
-              <div className='alert w-fit bg-neutral text-neutral-content'>
+              <div className='alert w-fit bg-info text-info-content'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
-                  className='h-6 w-6 shrink-0 stroke-info'>
+                  className='h-6 w-6 shrink-0 stroke-info-content'>
                   <path
                     strokeLinecap='round'
                     strokeLinejoin='round'

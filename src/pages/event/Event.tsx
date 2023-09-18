@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactNode } from 'react';
-import { getEvent, getEventGifts } from '@/utils/firestore-operations';
+import { getEvent, getEventGifts, deleteEvent } from '@/utils/firestore-operations';
 import Loader from '@/components/Loader';
 import AllGifts from './event-tabs/AllGifts';
 import ClaimedGifts from './event-tabs/ClaimedGifts';
@@ -10,6 +10,9 @@ import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import { convertSecondsToLocalDate } from '@/utils/utils';
+import ConfirmEventDeleteModal from '@/components/event/ConfirmEventDeleteModal';
+import EditDropdown from '@/components/event/EditDropdown';
+import { useNavigate } from 'react-router-dom';
 
 interface EventProps {
   id: string;
@@ -24,8 +27,14 @@ const Event: React.FC<EventProps> = ({ id }) => {
   const [error, setError] = useState<string>('');
   const [tabLoading, setTabLoading] = useState<boolean>(false);
 
+  const [showDeleteEventModal, setShowDeleteEventModal] = useState<boolean>(false);
+  const [confirmDeleteEvent, setConfirmDeleteEvent] = useState<boolean>(false);
+  const [deleteEventLoading, setDeleteEventLoading] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string>('');
+
   const { theme } = useTheme();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   const fetchEventData = async () => {
     setLoading(true);
@@ -53,9 +62,28 @@ const Event: React.FC<EventProps> = ({ id }) => {
     }
   };
 
+  const handleDeleteEvent = async () => {
+    setDeleteEventLoading(true);
+    try {
+      await deleteEvent(id, currentUser.uid);
+    } catch (err: any) {
+      console.error('Error deleting event:', err.message);
+      setDeleteError('There was an error deleting this event. Please try again.');
+    } finally {
+      setDeleteEventLoading(false);
+      navigate('/dashboard');
+    }
+  };
+
   useEffect(() => {
     Promise.all([fetchEventData(), fetchEventGifts()]);
   }, []);
+
+  useEffect(() => {
+    if (confirmDeleteEvent) {
+      handleDeleteEvent();
+    }
+  }, [confirmDeleteEvent]);
 
   const renderTabContent = (): ReactNode => {
     switch (activeTab) {
@@ -69,7 +97,12 @@ const Event: React.FC<EventProps> = ({ id }) => {
       case 'claimed':
         return <ClaimedGifts />;
       case 'requested':
-        return <RequestedGifts />;
+        return (
+          <RequestedGifts
+            gifts={eventGifts}
+            refetchData={fetchEventGifts}
+          />
+        );
       default:
         return null;
     }
@@ -91,9 +124,25 @@ const Event: React.FC<EventProps> = ({ id }) => {
         eventData={eventData}
         fetchEventGifts={fetchEventGifts}
       />
+      <ConfirmEventDeleteModal
+        visible={showDeleteEventModal}
+        setVisible={setShowDeleteEventModal}
+        setConfirmDelete={setConfirmDeleteEvent}
+        deleteLoading={deleteEventLoading}
+      />
       <div className='container mt-12 grid grid-cols-2 gap-4 text-base-content'>
-        <div className='col-span-2 flex flex-row items-center justify-center gap-8 sm:col-span-1 sm:justify-start'>
+        <div className='col-span-2 flex flex-col justify-center gap-8 sm:col-span-1 sm:justify-start'>
           <h1 className='text-5xl font-bold'>{eventData.name}</h1>
+          {deleteError ? (
+            <div className='flex flex-row gap-2'>
+              <p className='text-lg'>{deleteError}</p>
+              <button
+                className='btn btn-outline btn-sm p-1 text-sm normal-case'
+                onClick={() => setDeleteError('')}>
+                Clear Error
+              </button>
+            </div>
+          ) : null}
         </div>
         <div className='col-span-2 flex items-center justify-center gap-4 sm:col-span-1'>
           {currentUser.uid === eventData.ownerId ? (
@@ -101,7 +150,7 @@ const Event: React.FC<EventProps> = ({ id }) => {
               {theme === 'night' ? (
                 <div className='duration-800 absolute inset-0 rounded-lg bg-secondary opacity-75 blur-sm transition group-hover:opacity-100'></div>
               ) : null}
-              <button className='btn btn-secondary btn-sm relative sm:btn-md'>Edit</button>
+              <EditDropdown setDeleteVisible={setShowDeleteEventModal} />
             </div>
           ) : null}
           <div className='group relative'>

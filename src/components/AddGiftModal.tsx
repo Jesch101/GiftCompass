@@ -27,6 +27,7 @@ const AddGiftModal: React.FC<AddGiftModalProps> = ({
     id: uuidv4(),
     eventId: eventData.id,
     name: '',
+    details: '',
     price: '',
     link: '',
     requestedByName: currentUser.displayName,
@@ -106,8 +107,25 @@ const AddGiftModal: React.FC<AddGiftModalProps> = ({
               type='text'
               required
               autoComplete='off'
+              autoFocus
               className='mt-1 w-full max-w-sm rounded-md border p-2'
               value={gift.name}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor='details'
+              className='block font-medium text-base-content'>
+              Details <span className='text-sm'>(size, color, etc.)</span>
+            </label>
+            <input
+              id='details'
+              name='details'
+              type='text'
+              autoComplete='off'
+              className='mt-1 w-full max-w-sm rounded-md border p-2'
+              value={gift.details}
               onChange={handleInputChange}
             />
           </div>

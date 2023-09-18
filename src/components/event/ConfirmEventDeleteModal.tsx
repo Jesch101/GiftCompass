@@ -1,20 +1,19 @@
 import React from 'react';
 import { Modal } from '@mui/material';
 
-interface ConfirmGiftDeleteModalProps {
+interface ConfirmEventDeleteModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setConfirmDelete: React.Dispatch<React.SetStateAction<boolean>>;
   deleteLoading: boolean;
 }
 
-const ConfirmGiftDeleteModal: React.FC<ConfirmGiftDeleteModalProps> = ({
+const ConfirmEventDeleteModal: React.FC<ConfirmEventDeleteModalProps> = ({
   visible,
   setVisible,
   setConfirmDelete,
   deleteLoading,
 }) => {
-  console.log('here');
   return (
     <Modal
       open={visible}
@@ -25,7 +24,7 @@ const ConfirmGiftDeleteModal: React.FC<ConfirmGiftDeleteModalProps> = ({
         <h2
           id='modal-modal-title'
           className='mb-4 w-full max-w-sm text-lg font-semibold'>
-          Are you sure you want to delete this gift? This action cannot be undone.
+          Are you sure you want to delete this event? This action cannot be undone.
         </h2>
         <div className='flex flex-row justify-end gap-4'>
           {deleteLoading ? (
@@ -50,4 +49,4 @@ const ConfirmGiftDeleteModal: React.FC<ConfirmGiftDeleteModalProps> = ({
   );
 };
 
-export default ConfirmGiftDeleteModal;
+export default ConfirmEventDeleteModal;

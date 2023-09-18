@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import CollapsibleCard from '@/components/CollapsibleCard';
-import EventCard from '@/components/EventCard';
 
 const Dashboard = () => {
   const { currentUser } = useAuth();

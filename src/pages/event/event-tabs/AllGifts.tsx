@@ -1,6 +1,6 @@
 import React from 'react';
 import Gift from '@/models/Gift';
-import GiftCard from '@/components/GiftCard';
+import GiftCard from '@/components/event/GiftCard';
 
 interface AllGiftsProps {
   gifts: Gift[];

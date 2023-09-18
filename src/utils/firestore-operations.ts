@@ -94,11 +94,22 @@ export async function addGiftToEvent(eventId: string, gift: Gift): Promise<void>
         eventId: eventId,
       });
 
-      // Update the user to append the new gift ID to their 'requestedGifts' array
+      // Update the user to append the new gift ID to their 'requestedGifts' map
       if (gift.requestedById) {
         const userDocRef = doc(db, 'users', gift.requestedById);
+
+        // Get the current requestedGifts map for the user
+        const userDocSnapshot = await getDoc(userDocRef);
+        const userData = userDocSnapshot.data();
+        const currentRequestedGifts = userData?.requestedGifts || {};
+
+        // Update the gift array for this event
+        const giftsForEvent = currentRequestedGifts[eventId] || [];
+        giftsForEvent.push(gift.id);
+
+        // Update the requestedGifts map
         await updateDoc(userDocRef, {
-          requestedGifts: arrayUnion(gift.id),
+          [`requestedGifts.${eventId}`]: giftsForEvent,
         });
       }
 
@@ -124,12 +135,32 @@ export const deleteGift = (gift: Gift): Promise<void> => {
       // Delete the gift from the event's sub-collection
       await deleteDoc(giftDocRef);
 
-      // Remove the gift ID from the user's requestedGifts array
+      // Remove the gift ID from the user's requestedGifts map
       if (gift.requestedById) {
         const userDocRef = doc(db, 'users', gift.requestedById);
-        await updateDoc(userDocRef, {
-          requestedGifts: arrayRemove(gift.id),
-        });
+
+        // Get the current requestedGifts map for the user
+        const userDocSnapshot = await getDoc(userDocRef);
+        const userData = userDocSnapshot.data();
+        const currentRequestedGifts = userData?.requestedGifts || {};
+
+        // Update the gift array for this event
+        const giftsForEvent = currentRequestedGifts[gift.eventId] || [];
+        const updatedGiftsForEvent = giftsForEvent.filter((id: string) => id !== gift.id);
+
+        // Update the requestedGifts map
+        if (updatedGiftsForEvent.length > 0) {
+          await updateDoc(userDocRef, {
+            [`requestedGifts.${gift.eventId}`]: updatedGiftsForEvent,
+          });
+        } else {
+          // Remove the event key if there are no more gifts
+          const updatedRequestedGifts = { ...currentRequestedGifts };
+          delete updatedRequestedGifts[gift.eventId]; // remove key-value pair
+          await updateDoc(userDocRef, {
+            requestedGifts: updatedRequestedGifts, // update the entire map
+          });
+        }
       }
 
       resolve();
@@ -179,4 +210,61 @@ export async function getUserOwnedEvents(userId: string): Promise<any[]> {
 
   // Filter out null values if any event documents were missing
   return events.filter((event) => event !== null);
+}
+
+export async function deleteEvent(eventId: string, userId: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const eventDocRef = doc(db, 'events', eventId);
+      const eventDocSnapshot = await getDoc(eventDocRef);
+
+      if (!eventDocSnapshot.exists()) {
+        reject(new Error('Event not found'));
+        return;
+      }
+
+      const eventData = eventDocSnapshot.data();
+      const ownerId = eventData?.ownerId;
+
+      if (userId !== ownerId) {
+        reject(new Error('User is not authorized to delete this event'));
+        return;
+      }
+
+      const giftsCollectionRef = collection(db, 'events', eventId, 'gifts');
+      const giftsSnapshot = await getDocs(giftsCollectionRef);
+      const deleteGiftsPromises: Promise<void>[] = [];
+      giftsSnapshot.forEach((docSnap) => {
+        deleteGiftsPromises.push(deleteDoc(doc(db, 'events', eventId, 'gifts', docSnap.id)));
+      });
+
+      await Promise.all(deleteGiftsPromises);
+
+      // Delete the event document
+      await deleteDoc(eventDocRef);
+
+      // Reference to the user document
+      const userDocRef = doc(db, 'users', userId);
+      const userDocSnapshot = await getDoc(userDocRef);
+      const userData = userDocSnapshot.data();
+
+      // Update the user's ownedEvents
+      await updateDoc(userDocRef, {
+        ownedEvents: arrayRemove(eventId),
+      });
+
+      // Update the user's requestedGifts by removing the eventId key
+      if (userData?.requestedGifts) {
+        const updatedRequestedGifts = { ...userData.requestedGifts };
+        delete updatedRequestedGifts[eventId];
+        await updateDoc(userDocRef, {
+          requestedGifts: updatedRequestedGifts,
+        });
+      }
+
+      resolve();
+    } catch (error: any) {
+      reject(new Error(`Error deleting event: ${error.message}`));
+    }
+  });
 }

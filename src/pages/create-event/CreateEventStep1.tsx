@@ -3,12 +3,15 @@ import { useEvent } from '@/context/EventContext';
 import { PiCaretRight, PiCaretLeft } from 'react-icons/pi';
 import { cn } from '@/lib/utils';
 import { FaRegCircleXmark } from 'react-icons/fa6';
+import { useTheme } from '@/context/ThemeContext';
 
 const CreateEventStep1 = () => {
   const { eventData, setEventData, setStep } = useEvent();
   const [nameError, setNameError] = useState<boolean | string>(true);
   const [descriptionError, setDescriptionError] = useState<boolean | string>(true);
   const [displayErrorList, setDisplayErrorList] = useState<string[]>([]);
+
+  const { theme } = useTheme();
 
   const handleNameChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const value = e.target.value;
@@ -71,7 +74,10 @@ const CreateEventStep1 = () => {
   }, []);
 
   return (
-    <div className='mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg'>
+    <div
+      className={cn('mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg', {
+        'bg-neutral text-neutral-content': theme === 'night',
+      })}>
       <div className='flex h-full flex-col items-center gap-4 p-4'>
         <h1 className='text-2xl font-semibold text-base-content'>Step 1: Basic Information</h1>
         <p className='text-center text-base text-base-content'>

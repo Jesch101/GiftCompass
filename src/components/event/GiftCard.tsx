@@ -35,7 +35,6 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift, refetchData }) => {
     }
   };
 
-  // Your useEffect
   useEffect(() => {
     if (confirmDelete) {
       handleGiftDelete();
@@ -56,20 +55,39 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift, refetchData }) => {
           'bg-base-100 text-base-content': theme === 'corporate',
         })}>
         <div className='card-body'>
-          <h2 className='card-title'>{gift.name}</h2>
-          <div></div>
+          <div>
+            <div className='flex items-center justify-center font-bold'>
+              <h2 className='text-xl'>{gift.name}</h2>
+            </div>
+            <div className='divider m-0'></div>
+            <p className='text-lg'>
+              <span className='font-semibold'>Details:</span> {gift?.details}
+            </p>
+            <p className='text-lg'>
+              <span className='font-semibold'>Category:</span> {gift?.giftCategory}
+            </p>
+            <p className='text-lg'>
+              <span className='font-semibold'>Price:</span> {gift.price ? gift.price : 'N/A'}
+            </p>
+            <div className='divider m-0'></div>
+            {gift?.requestedByName && (
+              <p className='text-lg'>
+                <span className='font-semibold'>Requested By:</span>{' '}
+                {gift?.anonymous ? 'Anonymous' : gift?.requestedByName}
+              </p>
+            )}
+            <div className='divider m-0'></div>
+          </div>
           <div className='card-actions justify-end'>
             {currentUser.uid === gift.requestedById ? (
               <>
                 <button
-                  className='btn btn-error btn-sm normal-case'
+                  className='btn btn-error btn-xs normal-case'
                   onClick={handleGiftDelete}>
                   Delete Gift
                 </button>
                 <div className='hover:cursor-not-allowed'>
-                  <button className='btn btn-disabled btn-primary btn-sm normal-case'>
-                    Claim Gift
-                  </button>
+                  <button className='btn btn-primary btn-xs normal-case'>Edit Gift</button>
                 </div>
               </>
             ) : (
