@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useEvent } from '@/context/EventContext';
 import { PiCaretRight, PiCaretLeft } from 'react-icons/pi';
 import { cn } from '@/lib/utils';
-import { FaRegCircleXmark } from 'react-icons/fa6';
+import { FaRegCircleXmark, FaCircleInfo } from 'react-icons/fa6';
 import { useTheme } from '@/context/ThemeContext';
 
 const CreateEventStep1 = () => {
   const { eventData, setEventData, setStep } = useEvent();
   const [nameError, setNameError] = useState<boolean | string>(true);
   const [descriptionError, setDescriptionError] = useState<boolean | string>(true);
+  const [passwordError, setPasswordError] = useState<boolean | string>(true);
   const [displayErrorList, setDisplayErrorList] = useState<string[]>([]);
 
   const { theme } = useTheme();
@@ -38,6 +39,19 @@ const CreateEventStep1 = () => {
     }
   };
 
+  const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setEventData({ ...eventData, [name]: value });
+    if (value.length < 3) {
+      setPasswordError("Event password can't be less than 3 characters");
+    } else if (value.length > 30) {
+      setPasswordError("Event password can't be more than 30 characters");
+    } else {
+      setPasswordError(false);
+    }
+  };
+
   const handleDisplayErrorList = () => {
     let errors: string[] = [];
     if (typeof nameError === 'string') {
@@ -45,6 +59,9 @@ const CreateEventStep1 = () => {
     }
     if (typeof descriptionError === 'string') {
       errors.push(descriptionError);
+    }
+    if (typeof passwordError === 'string') {
+      errors.push(passwordError);
     }
     setDisplayErrorList(errors);
   };
@@ -73,12 +90,15 @@ const CreateEventStep1 = () => {
     }
   }, []);
 
+  const passwordInfo =
+    'Set a password for your event. Share with guests for access. Use a mix of letters, numbers, and symbols for security.';
+
   return (
     <div
       className={cn('mb-2 w-full max-w-xl rounded-2xl bg-base-200 shadow-lg', {
         'bg-neutral text-neutral-content': theme === 'night',
       })}>
-      <div className='flex h-full flex-col items-center gap-4 p-4'>
+      <div className='flex h-full flex-col items-center gap-2 p-4'>
         <h1 className='text-2xl font-semibold text-base-content'>Step 1: Basic Information</h1>
         <p className='text-center text-base text-base-content'>
           Let's start with the basics. Fill in the information below to get started.
@@ -118,8 +138,34 @@ const CreateEventStep1 = () => {
             className='textarea textarea-bordered w-full max-w-xs text-[1rem]'
           />
         </div>
+        <div className='form-control w-full max-w-xs'>
+          <label className='label'>
+            <div className='label-text flex flex-row items-center gap-2'>
+              Event Password
+              <div
+                className='tooltip tooltip-info'
+                data-tip={passwordInfo}
+                role='button'>
+                <FaCircleInfo />
+              </div>
+            </div>
+          </label>
+          <input
+            placeholder='Event Password'
+            name='password'
+            minLength={3}
+            maxLength={30}
+            required
+            autoComplete='off'
+            defaultValue={eventData.password}
+            onChange={handlePasswordChange}
+            onBlur={handleDisplayErrorList}
+            className='textarea textarea-bordered w-full max-w-xs text-[1rem]'
+            type='password'
+          />
+        </div>
         {displayErrorList.length > 0 ? (
-          <div className='alert alert-error flex w-full max-w-md flex-row gap-2'>
+          <div className='alert alert-error flex w-full max-w-md flex-row gap-2 p-2'>
             <button
               className='btn btn-circle btn-error'
               onClick={() => setDisplayErrorList([])}>

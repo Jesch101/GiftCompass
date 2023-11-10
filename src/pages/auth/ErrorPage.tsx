@@ -7,6 +7,7 @@ interface ErrorProps {
 const ErrorPage: React.FC<ErrorProps> = ({ errorCode }) => {
   const errorMessages: { [key: number]: string } = {
     404: 'Page not found',
+    403: 'Forbidden',
     500: 'Internal server error',
     401: 'Unauthorized',
   };

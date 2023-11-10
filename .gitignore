@@ -29,3 +29,11 @@ package-lock.json
 .prettierignore
 
 todo.md
+
+firebase.json
+.firebaserc
+firebase-debug.log
+firestore-debut.log
+
+firestore.rules
+src/config/*

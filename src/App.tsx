@@ -16,7 +16,7 @@ const Profile = lazy(() => import('@/pages/profile/Profile'));
 const CreateEventContainer = lazy(() => import('@/pages/create-event/CreateEventContainer'));
 const EventContainer = lazy(() => import('@/pages/event/EventContainer'));
 const EventsPage = lazy(() => import('@/pages/event/EventsPage'));
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const JoinEvent = lazy(() => import('@/pages/JoinEvent'));
 
 function App() {
   return (
@@ -49,6 +49,10 @@ function App() {
                 />
                 <Route element={<PrivateRoutes />}>
                   <Route
+                    path='/join'
+                    element={<JoinEvent />}
+                  />
+                  <Route
                     path='/profile'
                     element={<Profile />}
                   />
@@ -59,10 +63,6 @@ function App() {
                         <CreateEventContainer />
                       </EventProvider>
                     }
-                  />
-                  <Route
-                    path='/dashboard'
-                    element={<Dashboard />}
                   />
                   <Route
                     path='/my-events'

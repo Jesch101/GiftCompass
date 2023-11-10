@@ -5,14 +5,17 @@ import AllGifts from './event-tabs/AllGifts';
 import ClaimedGifts from './event-tabs/ClaimedGifts';
 import RequestedGifts from './event-tabs/RequestedGifts';
 import AddGiftModal from '@/components/AddGiftModal';
+import { AiOutlineLink } from 'react-icons/ai';
 import { FaPlus } from 'react-icons/fa6';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import { convertSecondsToLocalDate } from '@/utils/utils';
 import ConfirmEventDeleteModal from '@/components/event/ConfirmEventDeleteModal';
-import EditDropdown from '@/components/event/EditDropdown';
+import ManageDropdown from '@/components/event/ManageDropdown';
 import { useNavigate } from 'react-router-dom';
+
+import { generateInviteLink } from '@/config/firebase';
 
 interface EventProps {
   id: string;
@@ -31,6 +34,10 @@ const Event: React.FC<EventProps> = ({ id }) => {
   const [confirmDeleteEvent, setConfirmDeleteEvent] = useState<boolean>(false);
   const [deleteEventLoading, setDeleteEventLoading] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string>('');
+
+  const [inviteCodeLoading, setInviteCodeLoading] = useState<boolean>(false);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [copyInviteCodeText, setCopyInviteCodeText] = useState<string>('Copy Invite Code');
 
   const { theme } = useTheme();
   const { currentUser } = useAuth();
@@ -71,10 +78,38 @@ const Event: React.FC<EventProps> = ({ id }) => {
       setDeleteError('There was an error deleting this event. Please try again.');
     } finally {
       setDeleteEventLoading(false);
-      navigate('/dashboard');
+      navigate('/my-events');
     }
   };
 
+  const handleGetInviteLink = async () => {
+    setInviteCodeLoading(true);
+    generateInviteLink({ eventId: id, expirationDate: new Date(), singleUse: false })
+      .then((res) => {
+        setInviteCode(res.data as string);
+      })
+      .catch((err: Error) => {
+        console.error(err.message);
+        setInviteCode('There was an error generating the invite code. Please try again.');
+      })
+      .finally(() => {
+        setInviteCodeLoading(false);
+      });
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(inviteCode as string)
+      .then(() => {
+        setCopyInviteCodeText('Copied!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy text: ', err);
+        setCopyInviteCodeText('Failed to copy');
+      });
+  };
+
+  // Page load fetches
   useEffect(() => {
     Promise.all([fetchEventData(), fetchEventGifts()]);
   }, []);
@@ -146,12 +181,66 @@ const Event: React.FC<EventProps> = ({ id }) => {
         </div>
         <div className='col-span-2 flex items-center justify-center gap-4 sm:col-span-1'>
           {currentUser.uid === eventData.ownerId ? (
-            <div className='group relative'>
-              {theme === 'night' ? (
-                <div className='duration-800 absolute inset-0 rounded-lg bg-secondary opacity-75 blur-sm transition group-hover:opacity-100'></div>
-              ) : null}
-              <EditDropdown setDeleteVisible={setShowDeleteEventModal} />
-            </div>
+            <>
+              <div className='group relative'>
+                {theme === 'night' ? (
+                  <div className='duration-800 absolute inset-0 rounded-lg bg-secondary opacity-75 blur-sm transition group-hover:opacity-100'></div>
+                ) : null}
+                {eventData ? (
+                  <ManageDropdown
+                    setDeleteVisible={setShowDeleteEventModal}
+                    eventData={eventData}
+                  />
+                ) : null}
+              </div>
+
+              <div className='dropdown'>
+                <label
+                  tabIndex={0}
+                  className='btn btn-accent btn-sm relative sm:btn-md'>
+                  <span>
+                    <FaPlus />
+                  </span>
+                  Invite
+                </label>
+                <ul
+                  tabIndex={0}
+                  className={cn(
+                    'menu dropdown-content rounded-box z-[1] mt-1 min-w-[13rem] bg-base-200 p-2 shadow-lg',
+                    {
+                      'bg-neutral text-neutral-content': theme === 'night',
+                    }
+                  )}>
+                  <li>
+                    {inviteCodeLoading ? (
+                      <div className='flex justify-center'>
+                        <span className='loading loading-dots loading-sm'></span>
+                      </div>
+                    ) : !inviteCode ? (
+                      <a
+                        className='p-2'
+                        onClick={handleGetInviteLink}>
+                        <AiOutlineLink size={16} />
+                        Generate Invite code
+                      </a>
+                    ) : null}
+                    {inviteCode && !inviteCodeLoading ? (
+                      <div className='flex flex-col gap-2'>
+                        <div className='flex flex-row gap-2'>
+                          <p className='text-base-content/50'>Invite code:</p>
+                          <p className='text-base-content/75'>{inviteCode}</p>
+                        </div>
+                        <button
+                          className='btn btn-outline btn-sm p-1 text-sm normal-case'
+                          onClick={copyToClipboard}>
+                          {copyInviteCodeText}
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                </ul>
+              </div>
+            </>
           ) : null}
           <div className='group relative'>
             {theme === 'night' ? (

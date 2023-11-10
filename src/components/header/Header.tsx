@@ -25,11 +25,11 @@ const Header = () => {
           <nav className='flex items-center space-x-6 font-medium'>
             {currentUser !== null ? (
               <>
-                <Link
-                  to='/dashboard'
+                {/* <Link
+                  to='/join-event'
                   className='btn btn-ghost normal-case transition-colors'>
-                  Dashboard
-                </Link>
+                  Join Event
+                </Link> */}
                 <Link
                   to='/create-event'
                   className='btn btn-ghost normal-case transition-colors'>
@@ -58,7 +58,7 @@ const Header = () => {
             {currentUser === null ? (
               <Link
                 to='/signin'
-                className='btn normal-case'>
+                className='btn btn-neutral normal-case'>
                 Sign In
               </Link>
             ) : (

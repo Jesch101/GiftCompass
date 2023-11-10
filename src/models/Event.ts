@@ -10,6 +10,7 @@ interface Event {
   gifts: Gift[];
   eventDate: Date;
   publishDate: Date;
+  visibility: 'private' | 'private-pw' | 'private-link-only' | 'private-invite-only' | 'public';
 }
 
 export default Event;

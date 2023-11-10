@@ -76,7 +76,6 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift, refetchData }) => {
                 {gift?.anonymous ? 'Anonymous' : gift?.requestedByName}
               </p>
             )}
-            <div className='divider m-0'></div>
           </div>
           <div className='card-actions justify-end'>
             {currentUser.uid === gift.requestedById ? (

@@ -10,7 +10,6 @@ interface RequestedGiftsProps {
 
 const RequestedGifts: React.FC<RequestedGiftsProps> = ({ gifts, refetchData }) => {
   const { currentUser } = useAuth();
-  // Filter gifts by currentUser.uid === gift.requestedById
   gifts = gifts.filter((gift) => gift.requestedById === currentUser.uid);
   return (
     <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>

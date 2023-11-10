@@ -24,7 +24,7 @@ const Home = () => {
           </p>
           <div className='flex flex-row space-x-4'>
             <Link
-              to={currentUser ? '/dashboard' : '/signup'}
+              to={currentUser ? '/join-event' : '/signup'}
               className='btn btn-primary'>
               Get Started
             </Link>
