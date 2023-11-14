@@ -192,10 +192,38 @@ export async function getUserOwnedEvents(userId: string): Promise<any[]> {
     return [];
   }
 
+  // User owned events
   const userData = userDocSnapshot.data();
   const ownedEventIds: string[] = userData?.ownedEvents || [];
 
   const eventPromises = ownedEventIds.map(async (eventId) => {
+    const eventDocRef = doc(db, 'events', eventId);
+    const eventDocSnapshot = await getDoc(eventDocRef);
+
+    if (eventDocSnapshot.exists()) {
+      return eventDocSnapshot.data();
+    }
+
+    return null;
+  });
+
+  const events = await Promise.all(eventPromises);
+
+  // Filter out null values if any event documents were missing
+  return events.filter((event) => event !== null);
+}
+
+export async function getUserJoinedEvents(userId: string): Promise<any[]> {
+  const userDocRef = doc(db, 'users', userId);
+  const userDocSnapshot = await getDoc(userDocRef);
+
+  if (!userDocSnapshot.exists()) {
+    return [];
+  }
+
+  const userData = userDocSnapshot.data();
+  const joinedEventIds: string[] = userData?.joinedEvents || [];
+  const eventPromises = joinedEventIds.map(async (eventId) => {
     const eventDocRef = doc(db, 'events', eventId);
     const eventDocSnapshot = await getDoc(eventDocRef);
 

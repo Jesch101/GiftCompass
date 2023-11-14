@@ -5,13 +5,13 @@ import { getStorage } from '@firebase/storage';
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from '@firebase/functions';
 
 const firebaseConfig = {
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId,
-  measurementId: process.env.measurementId,
+  apiKey: 'AIzaSyDrl_yOepIH6lCGyK9BlrcrCKO_g4tCLXU',
+  authDomain: 'giftregistry-ee951.firebaseapp.com',
+  projectId: 'giftregistry-ee951',
+  storageBucket: 'giftregistry-ee951.appspot.com',
+  messagingSenderId: '511279037110',
+  appId: '1:511279037110:web:e7032975b3b74a0e708417',
+  measurementId: 'G-HFCFHEHZHZ',
 };
 
 // Initialize Firebase

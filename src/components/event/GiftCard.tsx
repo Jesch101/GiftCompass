@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/context/ThemeContext';
 import { deleteGift } from '@/utils/firestore-operations';
+import { MdEdit, MdDelete } from 'react-icons/md';
 import ConfirmGiftDeleteModal from './ConfirmGiftDeleteModal';
 
 interface GiftCardProps {
@@ -50,7 +51,7 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift, refetchData }) => {
         deleteLoading={deleteLoading}
       />
       <div
-        className={cn('card card-compact w-full max-w-sm shadow-xl', {
+        className={cn('card card-compact w-full max-w-sm drop-shadow-xl', {
           'bg-neutral text-neutral-content': theme === 'night',
           'bg-base-100 text-base-content': theme === 'corporate',
         })}>
@@ -81,12 +82,14 @@ const GiftCard: React.FC<GiftCardProps> = ({ gift, refetchData }) => {
             {currentUser.uid === gift.requestedById ? (
               <>
                 <button
-                  className='btn btn-error btn-xs normal-case'
+                  className='btn btn-error btn-sm normal-case'
                   onClick={handleGiftDelete}>
-                  Delete Gift
+                  <MdDelete size={20} />
                 </button>
                 <div className='hover:cursor-not-allowed'>
-                  <button className='btn btn-primary btn-xs normal-case'>Edit Gift</button>
+                  <button className='btn btn-primary btn-sm normal-case'>
+                    <MdEdit size={20} />
+                  </button>
                 </div>
               </>
             ) : (

@@ -23,7 +23,7 @@ const JoinEvent = () => {
           setError(err.message);
           setTimeout(() => {
             navigate('/');
-          }, 4000);
+          }, 8000);
         })
         .finally(() => {
           setLoading(false);
@@ -36,7 +36,7 @@ const JoinEvent = () => {
   if (loading) {
     return <Loader />;
   } else if (error) {
-    return <p>Uh oh! This join link isn't working it seems. Redirecting you to our home page...</p>;
+    return <p>{error}</p>;
   } else {
     return <p>Welcome to the event!</p>;
   }

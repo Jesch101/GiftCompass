@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getUserOwnedEvents } from '@/utils/firestore-operations';
+import { getUserOwnedEvents, getUserJoinedEvents } from '@/utils/firestore-operations';
 import Loader from '@/components/Loader';
 import { cn } from '@/lib/utils';
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa6';
@@ -30,9 +30,11 @@ const EventsPage = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const getOwnedEvents = async () => {
+  const getEvents = async () => {
     try {
-      const events = await getUserOwnedEvents(currentUser.uid);
+      const ownedEvents = getUserOwnedEvents(currentUser.uid);
+      const joinedEvents = getUserJoinedEvents(currentUser.uid);
+      const events = (await ownedEvents).concat(await joinedEvents);
       events.sort((a, b) => a.date.seconds + b.date.seconds);
       setOwnedEvents(events);
     } catch (error: any) {
@@ -41,7 +43,7 @@ const EventsPage = () => {
   };
 
   useEffect(() => {
-    getOwnedEvents().then(() => {
+    getEvents().then(() => {
       setLoading(false);
     });
   }, []);
@@ -169,7 +171,7 @@ const EventsPage = () => {
             </div>
           </div>
         ) : (
-          <div className='flex flex-col items-center gap-2'>
+          <div className='mt-8 flex flex-col items-center gap-2'>
             <h1 className='text-3xl font-bold'>Your Events</h1>
             <p className='text-base-content'>You have not created any events yet.</p>
           </div>

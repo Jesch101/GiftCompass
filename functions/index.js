@@ -120,12 +120,18 @@ exports.validateInvite = onCall(
         eventRef.update({
           members: admin.firestore.FieldValue.arrayUnion(uid),
         });
+      const updateMemberJoinedList = async () => {
+        const userRef = db.collection('users').doc(uid);
+        const userDoc = await userRef.get();
+        const joinedEvents = userDoc.data().joinedEvents || [];
+        userRef.update({ joinedEvents: admin.firestore.FieldValue.arrayUnion(eventId) });
+      };
 
-      Promise.all(addMember(), updateUsed());
+      Promise.all(addMember(), updateUsed(), updateMemberJoinedList());
     } catch (error) {
       throw new HttpsError('internal', 'Failed to update event with new participant.');
     }
 
-    return { status: 'success', message: 'Successfully joined the event!' };
+    return { status: 'success', message: 'Successfully joined the event!', eventId: eventId };
   }
 );

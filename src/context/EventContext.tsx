@@ -10,8 +10,6 @@ interface EventData {
   ownerDisplayName: string;
   publishDate: Date;
   members?: string[];
-  password: string;
-  visibility: 'private' | 'private-pw' | 'private-link-only' | 'private-invite-only';
 }
 
 interface EventContextProps {
@@ -47,8 +45,6 @@ export const EventProvider: React.FC<EventProviderProps> = ({ children }) => {
     ownerDisplayName: currentUser?.displayName || 'Anonymous',
     publishDate: new Date(),
     members: [currentUser?.uid] || [],
-    password: '',
-    visibility: 'private',
   });
 
   let value = { eventData, setEventData, step, setStep };
