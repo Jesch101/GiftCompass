@@ -9,11 +9,11 @@ import {
   deleteDoc,
   arrayUnion,
   query,
-  arrayRemove,
 } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import User from '@/models/User';
 import Gift from '@/models/Gift';
+import { deleteClaimedGift } from '@/config/firebase';
 
 // Utility function to add a new user
 export async function addUser(user: User) {
@@ -163,6 +163,15 @@ export const deleteGift = (gift: Gift): Promise<void> => {
         }
       }
 
+      // If gift is claimed, remove the gift ID from the user's claimedGifts map
+      if (gift.claimedById) {
+        await deleteClaimedGift({
+          eventId: gift.eventId,
+          giftId: gift.id,
+          claimedById: gift.claimedById,
+        });
+      }
+
       resolve();
     } catch (error: any) {
       reject(new Error(`Error deleting gift: ${error.message}`));
@@ -226,7 +235,6 @@ export async function getUserJoinedEvents(userId: string): Promise<any[]> {
   const eventPromises = joinedEventIds.map(async (eventId) => {
     const eventDocRef = doc(db, 'events', eventId);
     const eventDocSnapshot = await getDoc(eventDocRef);
-
     if (eventDocSnapshot.exists()) {
       return eventDocSnapshot.data();
     }
@@ -240,59 +248,121 @@ export async function getUserJoinedEvents(userId: string): Promise<any[]> {
   return events.filter((event) => event !== null);
 }
 
-export async function deleteEvent(eventId: string, userId: string): Promise<void> {
+export async function claimGift(gift: Gift, userId: string): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {
-      const eventDocRef = doc(db, 'events', eventId);
-      const eventDocSnapshot = await getDoc(eventDocRef);
+      // Reference to the gift document
+      const eventId = gift.eventId;
+      const giftId = gift.id;
 
-      if (!eventDocSnapshot.exists()) {
-        reject(new Error('Event not found'));
+      const giftDocRef = doc(db, 'events', eventId, 'gifts', giftId);
+      const giftDocSnapshot = await getDoc(giftDocRef);
+
+      if (!giftDocSnapshot.exists()) {
+        reject(new Error('Gift not found'));
         return;
       }
 
-      const eventData = eventDocSnapshot.data();
-      const ownerId = eventData?.ownerId;
+      const giftData = giftDocSnapshot.data();
+      const claimedById = giftData?.claimedById;
 
-      if (userId !== ownerId) {
-        reject(new Error('User is not authorized to delete this event'));
+      if (claimedById) {
+        reject(new Error('Gift has already been claimed'));
         return;
       }
 
-      const giftsCollectionRef = collection(db, 'events', eventId, 'gifts');
-      const giftsSnapshot = await getDocs(giftsCollectionRef);
-      const deleteGiftsPromises: Promise<void>[] = [];
-      giftsSnapshot.forEach((docSnap) => {
-        deleteGiftsPromises.push(deleteDoc(doc(db, 'events', eventId, 'gifts', docSnap.id)));
+      // Update the gift document
+      const claimedUserDocRef = doc(db, 'users', userId);
+      const claimedUserDocSnapshot = await getDoc(claimedUserDocRef);
+      const claimedUserData = claimedUserDocSnapshot.data();
+
+      await updateDoc(giftDocRef, {
+        claimedById: userId,
+        claimedBy: claimedUserData?.name,
       });
-
-      await Promise.all(deleteGiftsPromises);
-
-      // Delete the event document
-      await deleteDoc(eventDocRef);
 
       // Reference to the user document
       const userDocRef = doc(db, 'users', userId);
       const userDocSnapshot = await getDoc(userDocRef);
       const userData = userDocSnapshot.data();
 
-      // Update the user's ownedEvents
+      // Get the current claimedGifts map for the user
+      const currentClaimedGifts = userData?.claimedGifts || {};
+
+      // Update the gift array for this event
+      const giftsForEvent = currentClaimedGifts[eventId] || [];
+      giftsForEvent.push(giftId);
+
+      // Update the claimedGifts map
       await updateDoc(userDocRef, {
-        ownedEvents: arrayRemove(eventId),
+        [`claimedGifts.${eventId}`]: giftsForEvent,
       });
 
-      // Update the user's requestedGifts by removing the eventId key
-      if (userData?.requestedGifts) {
-        const updatedRequestedGifts = { ...userData.requestedGifts };
-        delete updatedRequestedGifts[eventId];
+      resolve();
+    } catch (error: any) {
+      reject(new Error(`Error claiming gift: ${error.message}`));
+    }
+  });
+}
+
+export async function unclaimGift(gift: Gift, userId: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Reference to the gift document
+      const eventId = gift.eventId;
+      const giftId = gift.id;
+
+      const giftDocRef = doc(db, 'events', eventId, 'gifts', giftId);
+      const giftDocSnapshot = await getDoc(giftDocRef);
+
+      if (!giftDocSnapshot.exists()) {
+        reject(new Error('Gift not found'));
+        return;
+      }
+
+      const giftData = giftDocSnapshot.data();
+      const claimedById = giftData?.claimedById;
+
+      if (claimedById === undefined || claimedById !== userId || claimedById === null) {
+        reject(new Error('Gift is not claimed yet.'));
+        return;
+      }
+
+      // Update the gift document
+      await updateDoc(giftDocRef, {
+        claimedById: null,
+        claimedBy: null,
+      });
+
+      // Reference to the user document
+      const userDocRef = doc(db, 'users', userId);
+      const userDocSnapshot = await getDoc(userDocRef);
+      const userData = userDocSnapshot.data();
+
+      // Get the current claimedGifts map for the user
+      const currentClaimedGifts = userData?.claimedGifts || {};
+
+      // Update the gift array for this event
+      const giftsForEvent = currentClaimedGifts[eventId] || [];
+      const updatedGiftsForEvent = giftsForEvent.filter((id: string) => id !== giftId);
+
+      // Update the claimedGifts map
+      if (updatedGiftsForEvent.length > 0) {
         await updateDoc(userDocRef, {
-          requestedGifts: updatedRequestedGifts,
+          [`claimedGifts.${eventId}`]: updatedGiftsForEvent,
+        });
+      } else {
+        // Remove the event key if there are no more gifts
+        const updatedClaimedGifts = { ...currentClaimedGifts };
+        delete updatedClaimedGifts[eventId]; // remove key-value pair
+        await updateDoc(userDocRef, {
+          claimedGifts: updatedClaimedGifts, // update the entire map
         });
       }
 
       resolve();
     } catch (error: any) {
-      reject(new Error(`Error deleting event: ${error.message}`));
+      reject(new Error(`Error claiming gift: ${error.message}`));
     }
   });
 }

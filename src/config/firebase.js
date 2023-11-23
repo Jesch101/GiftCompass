@@ -24,6 +24,7 @@ export const storage = getStorage(app);
 // Functions
 export const functions = getFunctions(app);
 // connectFunctionsEmulator(functions, '127.0.0.1', 5001);
-export const helloWorld = httpsCallable(functions, 'helloWorld2');
 export const generateInviteLink = httpsCallable(functions, 'generateInviteLink');
 export const validateInvite = httpsCallable(functions, 'validateInvite');
+export const deleteEvent = httpsCallable(functions, 'deleteEvent');
+export const deleteClaimedGift = httpsCallable(functions, 'deleteClaimedGift');

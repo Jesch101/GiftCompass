@@ -25,3 +25,22 @@ export const googleAuthError = (errorCode: any): string => {
       return 'Error signing in with Google. Please try again.';
   }
 };
+
+export const firebaseFunctionError = (errorCode: any): string => {
+  switch (errorCode) {
+    case 'unauthenticated':
+      return 'You must be authenticated to perform this action.';
+    case 'invalid-argument':
+      return 'Invalid input. Please check the provided data.';
+    case 'not-found':
+      return 'The requested resource was not found.';
+    case 'already-exists':
+      return 'The resource you are trying to access already exists.';
+    case 'expired':
+      return 'The resource you are trying to access has expired.';
+    case 'internal':
+      return 'An internal error occurred. Please try again later.';
+    default:
+      return 'An unknown error occurred. Please try again.';
+  }
+};

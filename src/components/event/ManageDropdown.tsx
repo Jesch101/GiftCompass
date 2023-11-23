@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { cn } from '@/lib/utils';
-import { BsPersonFillAdd } from 'react-icons/bs';
+import { MdManageAccounts } from 'react-icons/md';
 import { FaCopy } from 'react-icons/fa6';
 import { Modal } from '@mui/material';
 
@@ -99,13 +99,16 @@ const ManageDropdown: React.FC<ManageDropdownProps> = ({ setDeleteVisible, event
           tabIndex={0}
           className='btn btn-secondary btn-sm relative sm:btn-md'
           onClick={toggleDropdown}>
+          <span>
+            <MdManageAccounts size={20} />
+          </span>
           Manage
         </label>
         {open && (
           <ul
             tabIndex={0}
             className={cn(
-              'menu dropdown-content rounded-box z-[1] mt-1 w-52 bg-base-200 p-2 shadow-lg',
+              'menu dropdown-content z-[1] mt-1 w-52 rounded-box bg-base-200 p-2 shadow-lg',
               {
                 'bg-neutral text-neutral-content': theme === 'night',
               }

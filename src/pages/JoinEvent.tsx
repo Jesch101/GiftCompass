@@ -17,7 +17,7 @@ const JoinEvent = () => {
     async function validateAndJoin() {
       validateInvite({ inviteCode: inviteCode })
         .then((res: any) => {
-          navigate(`/event/${res.data.eventId}`);
+          navigate(`/event/${res.data.eventId}`, { state: { joined: true } });
         })
         .catch((err: Error) => {
           setError(err.message);

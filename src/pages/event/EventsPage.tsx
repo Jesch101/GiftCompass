@@ -32,9 +32,9 @@ const EventsPage = () => {
 
   const getEvents = async () => {
     try {
-      const ownedEvents = getUserOwnedEvents(currentUser.uid);
-      const joinedEvents = getUserJoinedEvents(currentUser.uid);
-      const events = (await ownedEvents).concat(await joinedEvents);
+      const ownedEvents = await getUserOwnedEvents(currentUser.uid);
+      const joinedEvents = await getUserJoinedEvents(currentUser.uid);
+      const events = ownedEvents.concat(joinedEvents);
       events.sort((a, b) => a.date.seconds + b.date.seconds);
       setOwnedEvents(events);
     } catch (error: any) {

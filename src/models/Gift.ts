@@ -8,7 +8,7 @@ interface Gift {
   price?: string;
   requestedByName: string | null;
   requestedById: string | null;
-  claimedByName?: string | null;
+  claimedBy?: string | null;
   claimedById?: string | null;
   reservedAt: Date | null;
   giftCategory: string | null;

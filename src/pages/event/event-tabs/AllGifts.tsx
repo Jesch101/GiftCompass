@@ -1,6 +1,7 @@
 import React from 'react';
 import Gift from '@/models/Gift';
 import GiftCard from '@/components/event/GiftCard';
+import { useAuth } from '@/context/AuthContext';
 
 interface AllGiftsProps {
   gifts: Gift[];

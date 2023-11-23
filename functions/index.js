@@ -9,6 +9,7 @@
 
 // const { onRequest } = require('firebase-functions/v2/https');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
+const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { v4: uuidv4 } = require('uuid');
 admin.initializeApp();
@@ -133,5 +134,114 @@ exports.validateInvite = onCall(
     }
 
     return { status: 'success', message: 'Successfully joined the event!', eventId: eventId };
+  }
+);
+
+exports.deleteEvent = onCall(
+  { cors: ['http://localhost:5173', 'https://localhost:5173'] },
+  async (request) => {
+    const db = admin.firestore();
+
+    const { eventId } = request.data;
+    const uid = request.auth.uid;
+
+    if (!uid) {
+      throw new HttpsError('unauthenticated', 'User must be authenticated to do this.');
+    }
+
+    let eventDocRef, eventDoc, eventData;
+    try {
+      // Get event data
+      eventDocRef = db.collection('events').doc(eventId);
+      eventDoc = await eventDocRef.get();
+
+      if (!eventDoc.exists) {
+        throw new HttpsError('not-fount', 'Event does not exist.');
+      }
+
+      eventData = eventDoc.data();
+      const ownerId = eventData?.ownerId;
+
+      if (ownerId !== uid) {
+        throw new HttpsError('unauthenticated', 'User is not authenticated to do this action.');
+      }
+    } catch (error) {
+      throw new HttpsError('internal', `Error retrieving event: ${error.message}`);
+    }
+
+    try {
+      const giftCollectionRef = eventDocRef.collection('gifts');
+      const giftsSnapshot = await giftCollectionRef.get();
+      const deleteGiftsPromises = giftsSnapshot.docs.map((doc) => {
+        return doc.ref.delete();
+      });
+
+      await Promise.all(deleteGiftsPromises);
+    } catch (error) {
+      throw new HttpsError('internal', `Error deleting gifts: ${error.message}`);
+    }
+
+    // Delete event document
+    try {
+      await eventDocRef.delete();
+    } catch (error) {
+      throw new HttpsError('internal', `Error deleting event: ${error.message}`);
+    }
+
+    // Reference to the event's members
+    try {
+      const members = eventData?.members || [];
+      const userUpdatePromises = members.map((memberId) => {
+        const userRef = db.collection('users').doc(memberId);
+        return userRef.update({
+          joinedEvents: admin.firestore.FieldValue.arrayRemove(eventId),
+          ownedEvents: admin.firestore.FieldValue.arrayRemove(eventId),
+          [`requestedGifts.${eventId}`]: admin.firestore.FieldValue.delete(),
+          [`claimedGifts.${eventId}`]: admin.firestore.FieldValue.delete(),
+        });
+      });
+
+      await Promise.all(userUpdatePromises);
+    } catch (error) {
+      throw new HttpsError('internal', `Error updating user documents: ${error.message}`);
+    }
+
+    return { status: 'success', message: 'Successfully deleted the event!' };
+  }
+);
+
+exports.deleteClaimedGift = onCall(
+  { cors: ['http://localhost:5173', 'https://localhost:5173'] },
+  async (request) => {
+    const db = admin.firestore();
+    const uid = request.auth.uid;
+
+    if (!uid) {
+      throw new HttpsError('unauthenticated', 'User must be authenticated to do this.');
+    }
+
+    const { eventId, giftId, claimedById } = request.data;
+    let userRef, userDoc;
+
+    try {
+      userRef = db.collection('users').doc(claimedById);
+      userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+        throw new HttpsError('not-found', 'User does not exist.');
+      }
+    } catch (error) {
+      throw new HttpsError('internal', `Error retrieving user: ${error.message}`);
+    }
+
+    try {
+      userRef.update({
+        [`claimedGifts.${eventId}`]: admin.firestore.FieldValue.arrayRemove(giftId),
+      });
+    } catch (error) {
+      throw new HttpsError('internal', `Error deleting gift: ${error.message}`);
+    }
+
+    return { status: 'success', message: 'Successfully deleted the gift!' };
   }
 );
